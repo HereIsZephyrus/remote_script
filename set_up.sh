@@ -63,9 +63,10 @@ if ("$OS" == "Windows (PowerShell)"); then
     echo "input the password "visitor" manully: (for expect is not supported in Windows)"
     ssh-copy-id -i $PUBKEY_PATH -p $PORT $VISITOR_ACCOUNT@$FRPC_DOMAIN
 else
+# add EOF to connectTong
+echo "EOF" >> $EXECUTE_FILE
 if [["$OS" == "Windows*"]];
     echo "Use shell manually under this folder "
-    EXECUTE_FILE+=".sh"
 else
     sudo mv $EXECUTE_FILE /usr/local/bin/
     sudo chmod +x /usr/local/bin/connectTong
