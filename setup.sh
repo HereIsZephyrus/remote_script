@@ -1,13 +1,11 @@
 #!/bin/bash
 # install dependency
 bash ./install.sh
-
 #SERVER=("sftp' "sshd" "rss")
 SERVER=('sftp' 'sshd') # rss are not supported for now
 PROTOCOL='tcp'
 DOMAIN='channingtong.cn'
 FRPC_DOMAIN='9.nat0.cn'
-
 # ask user to provide identity to generate ssh-key
 echo "Please provide your username to generate ssh-key"
 read USERNAME
@@ -16,13 +14,11 @@ if [[ $USERNAME =~ [^a-zA-Z0-9] ]]; then
     echo "Invalid username"
     exit 1
 fi
-
 # create alias command file under /usr/local/bin
 EXECUTE_FILE="./connectTong"
 touch $EXECUTE_FILE
 echo $"#!/bin/bash" > $EXECUTE_FILE
 echo "SERVER_TYPE=\$1" >> $EXECUTE_FILE
-
 # generate ssh-key for each server
 for server in ${SERVER[@]}
 do

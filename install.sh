@@ -11,7 +11,6 @@ else
     OS="Unknown"
 fi
 echo "current OS: $OS"
-
 case "$OS" in
     "Linux")
         # install dependency
