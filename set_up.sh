@@ -11,7 +11,7 @@ echo "Please provide your username to generate ssh-key"
 read USERNAME
 # check whether name string contains invalid character
 if [[ $USERNAME =~ [^a-zA-Z0-9] ]]; then
-    echo "Invalid username"
+    echo "Invalid username, no special character please."
     exit 1
 fi
 # create alias command file under /usr/local/bin
@@ -59,5 +59,14 @@ do
         echo $"added rsync command"
     fi
 done
-sudo mv $EXECUTE_FILE /usr/local/bin/
-sudo chmod +x /usr/local/bin/connectTong
+if ("$OS" == "Windows (PowerShell)"); then
+    echo "input the password "visitor" manully: (for expect is not supported in Windows)"
+    ssh-copy-id -i $PUBKEY_PATH -p $PORT $VISITOR_ACCOUNT@$FRPC_DOMAIN
+else
+if [["$OS" == "Windows*"]];
+    echo "Use shell manually under this folder "
+    EXECUTE_FILE+=".sh"
+else
+    sudo mv $EXECUTE_FILE /usr/local/bin/
+    sudo chmod +x /usr/local/bin/connectTong
+fi

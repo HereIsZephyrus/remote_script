@@ -31,3 +31,5 @@ connectTong pull <remote_file_path> <local_file_path>
 connectTong push <local_file_path> <remote_file_path>
 # Push a file from your local machine to channingTong work station.
 ```
+
+`notice` If you use Windows, please run the command under this folder.
