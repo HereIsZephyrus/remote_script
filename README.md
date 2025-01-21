@@ -15,7 +15,7 @@ If you use Windows, please run the following command in PowerShell as Administra
 
 ```bash
 cd remote_script
-./setup.sh
+bash ./setup.sh
 # Input your username to register the SSH. And enter your computer password to install the script.
 ```
 
