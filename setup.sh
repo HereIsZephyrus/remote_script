@@ -1,4 +1,6 @@
 #!/bin/bash
+# install dependency
+bash ./install.sh
 
 #SERVER=("sftp' "sshd" "rss")
 SERVER=('sftp' 'sshd') # rss are not supported for now
@@ -16,7 +18,7 @@ if [[ $USERNAME =~ [^a-zA-Z0-9] ]]; then
 fi
 
 # create alias command file under /usr/local/bin
-EXECUTE_FILE="./connectTong.sh"
+EXECUTE_FILE="./connectTong"
 touch $EXECUTE_FILE
 echo $"#!/bin/bash" > $EXECUTE_FILE
 echo "SERVER_TYPE=\$1" >> $EXECUTE_FILE
@@ -33,7 +35,7 @@ do
     echo "key name is ${SSHKEY_NAME}"
     SSHKEY_PATH="${SSH_CONFIG_PATH}${SSHKEY_NAME}"
     # check ssh-key, if not exist, add it
-    if [-e "${SSHKEY_PATH}"]; then
+    if [ -e "${SSHKEY_PATH}" ]; then
         echo "ssh-key exist"
     else
         ssh-keygen -t rsa -b 4096 -f ${SSHKEY_PATH} -N ""
@@ -46,6 +48,20 @@ do
     echo "    ${SSH_COMMAND}" >> $EXECUTE_FILE
     echo "fi" >> $EXECUTE_FILE 
     echo $"added ${server} server"
+    # add rsync command when generate sftp server
+    if [ $server == 'sftp' ]; then
+        RSYNC_COMMAND="rsync -avz -e 'ssh -i ${SSHKEY_PATH} -p ${PORT}' "
+        echo "if [ \$SERVER_TYPE == 'pull' ]; then" >> $EXECUTE_FILE
+        echo "  ORIENT_PATH=\$2" >> $EXECUTE_FILE
+        echo "  LOCAL_PATH=\$3" >> $EXECUTE_FILE
+        echo "  ${RSYNC_COMMAND} visitor@${FRPC_DOMAIN}:/mnt/repo/\$ORIENT_PATH \$LOCAL_PATH" >> $EXECUTE_FILE
+        echo "fi" >> $EXECUTE_FILE
+        echo "if [ \$SERVER_TYPE == 'push' ]; then" >> $EXECUTE_FILE
+        echo "  ORIENT_PATH=\$2" >> $EXECUTE_FILE
+        echo "  LOCAL_PATH=\$3" >> $EXECUTE_FILE
+        echo "  ${RSYNC_COMMAND} \$LOCAL_PATH visitor@${FRPC_DOMAIN}:/mnt/repo/\$ORIENT_PATH" >> $EXECUTE_FILE
+        echo $"added rsync command"
+    fi
 done
 sudo mv $EXECUTE_FILE /usr/local/bin/
-sudo chmod +x /usr/local/bin/connectTong.sh
+sudo chmod +x /usr/local/bin/connectTong
